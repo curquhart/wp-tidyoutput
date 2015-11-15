@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Tidy Output\n"
+"POT-Creation-Date: 2015-11-14 12:17-0800\n"
+"PO-Revision-Date: 2015-11-14 12:29-0800\n"
+"Last-Translator: Chelsea Urquhart <me@chelseau.com>\n"
+"Language-Team: Chelsea Urquhart <me@chelseau.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: tidyoutput.php\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: classes/TidyOutput.php:143
+msgid "Method"
+msgstr "Méthode"
+
+#: classes/TidyOutput.php:146
+msgid "Cleanup full page"
+msgstr "Pleine page de nettoyage"
+
+#: classes/TidyOutput.php:149
+msgid "Cleanup bad HTML"
+msgstr "Nettoyage mauvais HTML"
+
+#: classes/TidyOutput.php:152
+msgid "Format messy HTML"
+msgstr "Format HTML malpropre"
+
+#: classes/TidyOutput.php:155
+msgid "Extra content indentation"
+msgstr "Contenu supplémentaire mise en retrait"
+
+#: classes/TidyOutput.php:338
+msgid "Choose the method you would like to use to manipulate HTML."
+msgstr ""
+"Choisissez la méthode que vous souhaitez utiliser pour manipuler le HTML."
+
+#: classes/TidyOutput.php:350
+msgid ""
+"Select True to cleanup the full page, or False to only cleanup post content."
+msgstr ""
+"Sélectionnez Vrai pour nettoyage de la page entière, ou Faux pour seulement "
+"le contenu de poteau nettoyage."
+
+#: classes/TidyOutput.php:362
+msgid "Select True to fix bad HTML, or False to disable."
+msgstr "Sélectionnez vrai pour six mauvais HTML, ou faux pour désactiver."
+
+#: classes/TidyOutput.php:374
+msgid ""
+"Select True to format messy HTML. Note that this can be useful when "
+"debugging but should usually be disabled on a production site as it adds "
+"bloat."
+msgstr ""
+"Sélectionnez Vrai pour mettre en forme HTML malpropre. Notez que cela peut "
+"être utile lors du débogage, mais doit généralement être désactivée sur un "
+"site de production car il ajoute ballonnement."
+
+#: classes/TidyOutput.php:388
+msgid ""
+"If not formatting the entire page, it can make the code cleaner by adding "
+"some extra indentation to post content. Select the level of indentation to "
+"add (1 level equals 4 spaces) or 0 to disable this feature."
+msgstr ""
+"Si ne pas en forme la page entière, il peut faire le code plus propre en "
+"ajoutant quelques indentation supplémentaire pour publier du contenu. "
+"Sélectionnez le niveau de mise en retrait à ajouter (1 niveau est égal à 4 "
+"places) ou 0 pour désactiver cette fonctionnalité."
+
+#: classes/TidyOutput.php:408
+msgid "Tidy Output Settings"
+msgstr "Mettre de l’ordre des paramètres de sortie"
+
+#. Plugin Name of the plugin/theme
+#: classes/TidyOutput.php:409
+msgid "Tidy Output"
+msgstr "Sortie bien rangé"
+
+#: views/settings_form.php:5
+msgid ""
+"These control various HTML output manipulations. Please note that if you are "
+"also using a plugin that minimizes your HTML, it is recommended to use only "
+"the Cleanup Bad HTML option as the work of the formatters will be reverted "
+"by your plugin which is a waste of CPU cycles."
+msgstr ""
+"Ceux-ci contrôlent diverses manipulations de sortie HTML. Veuillez noter que "
+"si vous utilisez également un plugin qui minimise votre code HTML, il est "
+"recommandé d’utiliser uniquement l’option de nettoyage mauvais HTML comme le "
+"travail des formateurs va être rétabli par votre plugin qui est une perte de "
+"cycles CPU."
+
+#: views/settings_form.php:13
+msgid ""
+"This plugin works best with Tidy, but DOMDocument is also supported. "
+"However, you seem to have neither. You'll need toinstall/enable one of these "
+"to use the Tidy Output plugin."
+msgstr ""
+"Ce brancher fonctionne mieux avec Vidy, mais DOMDocument est également pris "
+"en charge. Cependant, vous semblez avoir ni. Vous aurez besoin d’installer/"
+"activer l’un d’entre eux d’utiliser le plugin de sortie bien rangé."
+
+#: views/settings_form.php:21
+msgid ""
+"This plugin works best with Tidy. Some options may be disabled as this "
+"library is not installed. You'll need to install/enable it to enable the "
+"disabled features."
+msgstr ""
+"Ce brancher fonctionne mieux avec Vidy. Certaines options peuvent être "
+"désactivées que cette bibliothèque n’est pas installée. Vous devrez "
+"installer/activer pour activer les fonctionnalités désactivées."
+
+#: views/settings_form.php:32
+msgid "Save Changes"
+msgstr "Enregistrez les modifications"
+
+#. Description of the plugin/theme
+msgid "A plugin designed to cleanup HTML output"
+msgstr "Un plugin destiné à une sortie HTML nettoyage"
+
+msgid "True"
+msgstr "Vrai"
+
+msgid "False"
+msgstr "Faux"
+
+msgid "Tidy (Recommended)"
+msgstr "Vidy (recommandé)"
+
+msgid "DOMDocument (Recommended)"
+msgstr "DOMDocument (recommandé)"
+
+msgid "Disable"
+msgstr "Désactiver"
