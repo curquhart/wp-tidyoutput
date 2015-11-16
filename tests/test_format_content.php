@@ -25,7 +25,7 @@ class FormatContentTest extends WP_UnitTestCase {
 
         // Tidy sure is though!
         $result = $this->tidy->clean_content_tidy( $raw );
-        $result = str_replace("\r", '', $result);
+        $result = str_replace( "\r", '', $result );
         $this->assertSame( "<div>\n    <p>123</p>\n</div>", $result );
     }
 }

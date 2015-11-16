@@ -18,7 +18,7 @@ class CleanContentTest extends WP_UnitTestCase {
     }
 
     public function test_cleanup_content() {
-        foreach (array( 'tidy', 'domdocument' ) as $method) {
+        foreach ( array( 'tidy', 'domdocument' ) as $method ) {
 
             $method = 'clean_content_' . $method;
 

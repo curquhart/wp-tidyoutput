@@ -81,7 +81,7 @@ class TidyOutput {
      */
     protected function __construct( $attach ) {
         $methods = $this->get_available_methods();
-        $first_method = reset($methods);
+        $first_method = reset( $methods );
 
         // Set defaults. TIDY_METHOD must be before CLEANUP and FORMAT for
         // validation to function properly.
@@ -129,6 +129,7 @@ class TidyOutput {
      *
      * @param bool $attach Should we attach to WordPress?
      * @param bool $create Force creation of a new instance?
+     *
      * @return TidyOutput
      */
     public static function &get_instance( $attach = false, $create = false ) {
@@ -138,6 +139,7 @@ class TidyOutput {
         } else if ( $create ) {
             // Return a new instance but retain the old one
             $new_instance = new TidyOutput( $attach );
+
             return $new_instance;
         }
 
@@ -182,7 +184,7 @@ class TidyOutput {
      * @param string $hook The page we're on
      */
     public function admin_enqueue_scripts( $hook ) {
-        if ( $hook == 'settings_page_' . static::NAME) {
+        if ( $hook == 'settings_page_' . static::NAME ) {
             $url = plugin_dir_url( __DIR__ )
                 . ltrim( static::PATH_VIEWS, '/' ) . 'settings_form.js.php';
             wp_enqueue_script( 'tidyoutput', $url, array( 'jquery' ) );
@@ -219,8 +221,10 @@ class TidyOutput {
 
         // Set defaults for any missing options
         foreach ( array_keys( $this->defaults ) as $key ) {
-            // Only look at options that are available
-            if ( ! isset ( $input[ $key ] ) ) continue;
+            if ( ! isset ( $input[ $key ] ) ) {
+                // Only look at options that are available
+                continue;
+            }
 
             $clean = null;
 
@@ -236,14 +240,14 @@ class TidyOutput {
                     // If the requested action is not supported, disable by
                     // default.
                     if ( ! $this->supports_action( $key,
-                            $cleaned[ static::TIDY_METHOD ])) {
+                            $cleaned[ static::TIDY_METHOD ] ) ) {
                         $input[ $key ] = false;
                     }
                     $clean = filter_var( $input[ $key ],
-                        FILTER_VALIDATE_BOOLEAN);
+                        FILTER_VALIDATE_BOOLEAN );
                     break;
                 case static::EXTRANEOUS_INDENT:
-                    $clean = filter_var( $input[ $key ], FILTER_VALIDATE_INT);
+                    $clean = filter_var( $input[ $key ], FILTER_VALIDATE_INT );
                     if ( $clean < 0
                             || $clean > static::MAX_EXTRANEOUS_INDENT ) {
                         $clean = null;
@@ -417,13 +421,14 @@ class TidyOutput {
         );
 
         if ( $this->get_option( static::CLEANUP )
-                && $this->get_option( static::FORMAT) ) {
+                && $this->get_option( static::FORMAT ) ) {
             // Cleanup and format
             $config = array_merge( $config, $indent_config );
             if ( ! $tidy->parseString( $content, $config, 'UTF8' )
                     || ! $tidy->cleanRepair() ) {
                 return $content;
             }
+
             return (string) $tidy;
         } else if ( $this->get_option( static::CLEANUP ) ) {
             // Cleanup only
@@ -434,6 +439,7 @@ class TidyOutput {
             if ( ! $tidy->parseString( $content, $config, 'UTF8' ) ) {
                 return $content;
             }
+
             return (string) $tidy;
         } else {
             // Unknown options are in use
@@ -464,8 +470,7 @@ class TidyOutput {
         $uid = uniqid();
 
         if ( ! $full_html ) {
-            $content = '<html><body id="' . $uid . '">' . $content
-                       . '</body>';
+            $content = '<html><body id="' . $uid . '">' . $content . '</body>';
         }
 
         $input->loadHTML( $content );
@@ -481,8 +486,9 @@ class TidyOutput {
 
         $failed = false;
         foreach ( $dom->childNodes as $child ) {
-            if ( isset($child->childNodes) && ( $child->childNodes->length === 0
-                    && $child->attributes->length === 0) ) {
+            if ( isset( $child->childNodes )
+                    && ( $child->childNodes->length === 0
+                    && $child->attributes->length === 0 ) ) {
                 // Skip empty nodes
                 continue;
             }
@@ -564,7 +570,6 @@ class TidyOutput {
             return $content;
         }
 
-
         $method = 'clean_content_' . $this->get_option( static::TIDY_METHOD );
 
         if ( method_exists( $this, $method ) && $this->supports_any_action() ) {
@@ -572,8 +577,8 @@ class TidyOutput {
         }
 
         if ( ! $full_html && ( ! $this->get_option( static::FORMAT )
-                               || ! $this->capturing )
-             && $this->options[ static::EXTRANEOUS_INDENT ] > 0 ) {
+                || ! $this->capturing )
+                && $this->options[ static::EXTRANEOUS_INDENT ] > 0 ) {
             $content = $this->indent_content( $content );
         }
 
@@ -665,23 +670,26 @@ class TidyOutput {
         $methods = array();
 
         if ( $this->supports_method( 'tidy' ) ) {
-            $methods[ 'tidy' ] = array(
-                'name'  => 'tidy',
+            $methods['tidy'] = array(
+                'name' => 'tidy',
                 'title' => 'Tidy',
-                'supports' => array( static::CLEANUP, static::FORMAT,
-                    static::FULL_PAGE )
+                'supports' => array(
+                    static::CLEANUP,
+                    static::FORMAT,
+                    static::FULL_PAGE
+                )
             );
         }
 
         if ( $this->supports_method( 'domdocument' ) ) {
-            $methods[ 'domdocument' ] = array(
-                'name'  => 'domdocument',
+            $methods['domdocument'] = array(
+                'name' => 'domdocument',
                 'title' => 'DOMDocument',
                 'supports' => array( static::CLEANUP, static::FULL_PAGE )
             );
         }
 
-        $methods[ 'disable' ] = array(
+        $methods['disable'] = array(
             'name' => 'disable',
             'title' => 'Disable',
             'supports' => array()
@@ -689,7 +697,7 @@ class TidyOutput {
 
         if ( count( $methods ) > 0 ) {
             reset( $methods );
-            $methods[ key($methods) ][ 'title' ] .= ' (Recommended)';
+            $methods[ key( $methods ) ]['title'] .= ' (Recommended)';
         }
 
         return $methods;
@@ -718,6 +726,7 @@ class TidyOutput {
      * Checks if the requested action is supported by the configured method
      *
      * @param string $action
+     *
      * @return bool
      */
     protected function supports_action( $action ) {

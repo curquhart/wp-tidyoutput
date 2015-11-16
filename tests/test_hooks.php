@@ -33,10 +33,10 @@ class HookTest extends WP_UnitTestCase {
 
     public function test_page_filter() {
         $this->tidy->set_option( TidyOutput::FULL_PAGE, true );
-        $filename = apply_filters( 'template_include', __FILE__);
+        $filename = apply_filters( 'template_include', __FILE__ );
 
         $this->assertSame( dirname( dirname( __FILE__ ) ) . '/template.php',
-            $filename);
+            $filename );
 
         $this->assertSame( __FILE__,
             TidyOutput::get_instance()->get_template() );

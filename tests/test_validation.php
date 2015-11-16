@@ -28,7 +28,7 @@ class ValidationTest extends WP_UnitTestCase {
         $this->assertSame( true, $this->tidy->get_option(
             TidyOutput::FORMAT ) );
         $this->assertSame( 5, $this->tidy->get_option(
-            TidyOutput::EXTRANEOUS_INDENT) );
+            TidyOutput::EXTRANEOUS_INDENT ) );
 
         // Now lets change to disabled and re-compare. This should disable
         // cleanup, format, and full page as well as they are unsupported.
