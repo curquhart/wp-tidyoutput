@@ -1,6 +1,8 @@
 <?php
 
-class HookTest extends WP_UnitTestCase {
+namespace TidyOutput;
+
+class HookTest extends \WP_UnitTestCase {
 
     protected $tidy = null;
 

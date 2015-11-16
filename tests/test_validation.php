@@ -1,6 +1,8 @@
 <?php
 
-class ValidationTest extends WP_UnitTestCase {
+namespace TidyOutput;
+
+class ValidationTest extends \WP_UnitTestCase {
 
     protected $tidy = null;
 
@@ -100,7 +102,7 @@ class ValidationTest extends WP_UnitTestCase {
         // to this.
         $default = $this->tidy->get_default_option( TidyOutput::FULL_PAGE );
 
-        $this->tidy->set_option( TidyOutput::FULL_PAGE, new DateTime() );
+        $this->tidy->set_option( TidyOutput::FULL_PAGE, new \DateTime() );
         $this->assertSame( $default, $this->tidy->get_option(
             TidyOutput::FULL_PAGE ) );
 

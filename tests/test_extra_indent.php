@@ -1,6 +1,8 @@
 <?php
 
-class ExtraIndentTest extends WP_UnitTestCase {
+namespace TidyOutput;
+
+class ExtraIndentTest extends \WP_UnitTestCase {
 
     const INDENT_LEVEL = 3;
 

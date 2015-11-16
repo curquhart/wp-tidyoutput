@@ -1,5 +1,7 @@
 <?php
 
+namespace TidyOutput;
+
 class TidyOutput {
 
     /**
@@ -415,7 +417,7 @@ class TidyOutput {
      * @return string
      */
     public function clean_content_tidy( $content, $full_html = false ) {
-        $tidy = new tidy();
+        $tidy = new \tidy();
 
         $config = array(
             'show-body-only' => ! $full_html,
@@ -469,7 +471,7 @@ class TidyOutput {
         libxml_use_internal_errors( true );
         libxml_clear_errors();
 
-        $input = new DOMDocument();
+        $input = new \DOMDocument();
         $input->recover = true;
 
         $uid = uniqid();
@@ -486,7 +488,7 @@ class TidyOutput {
             $dom = $input->getElementById( $uid );
         }
 
-        $output = new DOMDocument();
+        $output = new \DOMDocument();
         $output->encoding = 'UTF-8';
 
         $failed = false;
@@ -676,15 +678,15 @@ class TidyOutput {
      */
     public function send_javascript_headers() {
         // Calculate time in the future
-        $datetime = DateTime::createFromFormat( 'U',
+        $datetime = \DateTime::createFromFormat( 'U',
             time() + 60 * static::JAVASCRIPT_EXPIRES_MINUTES,
-            new DateTimeZone( 'GMT' ) );
+            new \DateTimeZone( 'GMT' ) );
 
         // Send headers
         header( 'Content-Type: application/javascript' );
         header( 'Cache-Control: max-age='
             . ( 60 * static::JAVASCRIPT_EXPIRES_MINUTES ) );
-        header( 'Expires: ' . $datetime->format( DateTime::RFC1123 ) );
+        header( 'Expires: ' . $datetime->format( \DateTime::RFC1123 ) );
     }
 
     /**
@@ -779,9 +781,9 @@ class TidyOutput {
     protected function supports_method( $tidy_method ) {
         switch ( $tidy_method ) {
             case 'tidy':
-                return class_exists( 'tidy' );
+                return class_exists( '\tidy' );
             case 'domdocument':
-                return class_exists( 'DOMDocument' );
+                return class_exists( '\DOMDocument' );
             case 'disable':
                 return true;
             default:

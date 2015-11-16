@@ -1,5 +1,7 @@
 <?php
 
+namespace TidyOutput;
+
 // Require class
 require __DIR__ . '/../classes/TidyOutput.php';
 

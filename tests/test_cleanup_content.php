@@ -1,6 +1,8 @@
 <?php
 
-class CleanContentTest extends WP_UnitTestCase {
+namespace TidyOutput;
+
+class CleanContentTest extends \WP_UnitTestCase {
 
     protected $tidy = null;
 

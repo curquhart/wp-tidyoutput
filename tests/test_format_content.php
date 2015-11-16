@@ -1,6 +1,8 @@
 <?php
 
-class FormatContentTest extends WP_UnitTestCase {
+namespace TidyOutput;
+
+class FormatContentTest extends \WP_UnitTestCase {
 
     protected $tidy = null;
 

@@ -11,6 +11,8 @@ Version: 1.0
 Author URI: http://www.chelseau.com
 */
 
+namespace TidyOutput;
+
 require __DIR__ . '/classes/TidyOutput.php';
 
 // Attach plugin to WordPress
