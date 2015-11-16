@@ -82,6 +82,11 @@ class TidyOutput {
     protected $options = array();
 
     /**
+     * @var array An array of classes for handling things
+     */
+    protected $handlers = array();
+
+    /**
      * Installs WP hooks and loads options
      *
      * @param bool $attach Should we attach to WordPress?
@@ -99,6 +104,9 @@ class TidyOutput {
             static::FORMAT => false,
             static::EXTRANEOUS_INDENT => 0
         );
+
+        // Default header handler
+        $this->register_handler('http_header', 'HttpHeaderOutputHandler');
 
         if ( ! $attach ) {
             // There is nothing else to do if we're not attaching to WordPress.
@@ -118,6 +126,68 @@ class TidyOutput {
         } else {
             add_action( 'init', array( &$this, 'init' ) );
         }
+    }
+
+    /**
+     * Registers a handler identified by $key
+     *
+     * @param string $key The key that identifies this handler
+     * @param string $class The name of the class to register
+     * @return bool True on success, false on failure
+     */
+    public function register_handler( $key, $class ) {
+
+        $classes = array();
+
+        // Priority is the class exactly as passed in
+        $classes[] = $class;
+
+        if ( $class[0] != '\\' ) {
+            // Try the root namespace if it isn't an absolute class path
+            $classes[] = '\\' . $class;
+
+            if ( strpos( $class, '\\' )  === false ) {
+                // Try our namespace if there is no namespace in the class path
+                $classes[] = '\\' . __NAMESPACE__ . '\\' . $class;
+            }
+        }
+
+        // Terminator
+        $classes[] = null;
+
+        foreach ($classes as $class) {
+            if ( class_exists( $class ) ) {
+                $this->handlers[ $key ] = $class;
+                break;
+            }
+        }
+
+        if ($class === null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns a refernece to the handler identified by $key
+     *
+     * @return mixed
+     */
+    public function &get_handler( $key ) {
+        if ( ! isset( $this->handlers[ $key ] ) ) {
+            $this->handlers[ $key ] = null;
+        }
+
+        if ( $this->handlers[ $key ] !== null
+                && ! is_object( $this->handlers[ $key ] ) ) {
+            // Don't initialize until we need it. Note that register_handler
+            // will not set a handler that is invalid, so there is no need
+            // to validate here.
+            $this->handlers[ $key ] = new $this->handlers[ $key ];
+        }
+
+        return $this->handlers[ $key ];
     }
 
     /**
@@ -682,11 +752,21 @@ class TidyOutput {
             time() + 60 * static::JAVASCRIPT_EXPIRES_MINUTES,
             new \DateTimeZone( 'GMT' ) );
 
+        $handler = $this->get_handler( 'http_header' );
+
+        if ( $handler === null
+                || ! is_a( $handler, __NAMESPACE__
+                . '\\HttpHeaderHandlerInterface' ) ) {
+            error_log( 'Invalid handler for http_header' );
+            return;
+        }
+
         // Send headers
-        header( 'Content-Type: application/javascript' );
-        header( 'Cache-Control: max-age='
+        $handler->add_header( 'Content-Type', 'application/javascript' );
+        $handler->add_header( 'Cache-Control', 'max-age='
             . ( 60 * static::JAVASCRIPT_EXPIRES_MINUTES ) );
-        header( 'Expires: ' . $datetime->format( \DateTime::RFC1123 ) );
+        $handler->add_header( 'Expires',
+            $datetime->format( \DateTime::RFC1123 ) );
     }
 
     /**
