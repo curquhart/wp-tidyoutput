@@ -497,6 +497,8 @@ class TidyOutput {
             'indent-spaces' => 4
         );
 
+        $html5 = $full_html && stripos( $content, '<!doctype html>') === 0;
+
         if ( $this->get_option( static::CLEANUP )
                 && $this->get_option( static::FORMAT ) ) {
             // Cleanup and format
@@ -506,10 +508,10 @@ class TidyOutput {
                 return $content;
             }
 
-            return (string) $tidy;
+            $content = (string) $tidy;
         } else if ( $this->get_option( static::CLEANUP ) ) {
             // Cleanup only
-            return $tidy->repairString( $content, $config, 'UTF8' );
+            $content = $tidy->repairString( $content, $config, 'UTF8' );
         } else if ( $this->get_option( static::FORMAT ) ) {
             // Format only
             $config = array_merge( $config, $indent_config );
@@ -517,11 +519,21 @@ class TidyOutput {
                 return $content;
             }
 
-            return (string) $tidy;
+            $content = (string) $tidy;
         } else {
             // Unknown options are in use
             return $content;
         }
+
+        if ( $html5 && $full_html ) {
+            // Strip doctype
+            $content = preg_replace('/\<\!doctype.+\>/i', '', $content, 1);
+
+            // Add correct doctype
+            $content = '<!doctype html>' . PHP_EOL . $content;
+        }
+
+        return $content;
     }
 
     /**
