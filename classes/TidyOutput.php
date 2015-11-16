@@ -566,10 +566,10 @@ class TidyOutput {
 
         if ( $full_html ) {
             $dom = $input->getElementsByTagName( 'html' );
-            if ($dom->length == 0) {
+            if ( $dom->length == 0 ) {
                 $dom = &$input;
             } else {
-                $dom = $dom[0];
+                $dom = $dom->item( 0 );
             }
         } else {
             $dom = $input->getElementById( $uid );
