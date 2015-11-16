@@ -2,8 +2,8 @@
 
 namespace TidyOutput;
 
-// Require class
-require __DIR__ . '/../classes/TidyOutput.php';
+// Require autoloader
+require __DIR__ . '/../classes/autoload.php';
 
 // Get TidyOutput instance. This (by default) won't try to attach to (unloaded)
 // WordPress

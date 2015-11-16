@@ -13,7 +13,7 @@ Author URI: http://www.chelseau.com
 
 namespace TidyOutput;
 
-require __DIR__ . '/classes/TidyOutput.php';
+require __DIR__ . '/classes/autoload.php';
 
 // Attach plugin to WordPress
 TidyOutput::attach();

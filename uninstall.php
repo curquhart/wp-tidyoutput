@@ -4,7 +4,8 @@
 if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     die();
 }
-require __DIR__ . '/classes/TidyOutput.php';
+
+require __DIR__ . '/classes/autoload.php';
 
 // Initialize without attaching to WordPress
 TidyOutput::get_instance()->uninstall();
