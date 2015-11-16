@@ -1,22 +1,17 @@
 <?php
 
-define('TIDYOUTPUT_JS_CACHE_MINUTES', 60);
-
-// Calculate time in the future
-$datetime = DateTime::createFromFormat( 'U',
-    time() + 60 * TIDYOUTPUT_JS_CACHE_MINUTES,
-    new DateTimeZone( 'GMT' ) );
-
-// Send headers
-header( 'Content-Type: application/javascript' );
-header( 'Cache-Control: max-age=' . ( 60 * TIDYOUTPUT_JS_CACHE_MINUTES ) );
-header( 'Expires: ' . $datetime->format( DateTime::RFC1123 ) );
-
-// Cleanup
-unset( $datetime );
-
 // Require class
 require __DIR__ . '/../classes/TidyOutput.php';
+
+// Get TidyOutput instance. This (by default) won't try to attach to (unloaded)
+// WordPress
+$instance = TidyOutput::get_instance();
+
+// Send applicable JavaScript headers
+$instance->sendJavascriptHeaders();
+
+// Get available tidying methods
+$methods = $instance->get_available_methods();
 
 ?>
 
@@ -24,8 +19,7 @@ require __DIR__ . '/../classes/TidyOutput.php';
     "use strict";
 
     // Datas
-    var methods = <?= json_encode( array_values(
-        TidyOutput::get_instance()->get_available_methods() ) ); ?>;
+    var methods = <?= json_encode( array_values( $methods ) ); ?>;
     var method_id = <?= json_encode( '#' . TidyOutput::NAME . '_'
         . TidyOutput::TIDY_METHOD); ?>;
     var full_page_id = <?= json_encode( '#' . TidyOutput::NAME . '_'

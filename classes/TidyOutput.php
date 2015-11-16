@@ -49,6 +49,11 @@ class TidyOutput {
     const MAX_EXTRANEOUS_INDENT = 20;
 
     /**
+     * Number of minutes to tell the browser to cache JavaScript for
+     */
+    const JAVASCRIPT_EXPIRES_MINUTES = 60;
+
+    /**
      * @var TidyOutput|null The current instance object
      */
     protected static $instance = null;
@@ -658,6 +663,26 @@ class TidyOutput {
             // Output result
             echo $this->clean_content( $buffer, true );
         }
+    }
+
+    /**
+     * Sends JavaScript-related headers (content type, cache-control, and
+     * expires.)
+     *
+     * This is for use with dynamic JS that is only dynamic so far that it uses
+     * settings from this class.
+     */
+    public function send_javascript_headers() {
+        // Calculate time in the future
+        $datetime = DateTime::createFromFormat( 'U',
+            time() + 60 * static::JAVASCRIPT_EXPIRES_MINUTES,
+            new DateTimeZone( 'GMT' ) );
+
+        // Send headers
+        header( 'Content-Type: application/javascript' );
+        header( 'Cache-Control: max-age='
+            . ( 60 * static::JAVASCRIPT_EXPIRES_MINUTES ) );
+        header( 'Expires: ' . $datetime->format( DateTime::RFC1123 ) );
     }
 
     /**
