@@ -10,7 +10,7 @@ require __DIR__ . '/../classes/TidyOutput.php';
 $instance = TidyOutput::get_instance();
 
 // Send applicable JavaScript headers
-$instance->sendJavascriptHeaders();
+$instance->send_javascript_headers();
 
 // Get available tidying methods
 $methods = $instance->get_available_methods();
