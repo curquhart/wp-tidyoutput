@@ -52,6 +52,11 @@ class CleanContentTest extends \WP_UnitTestCase {
             $result = trim( $this->tidy->$method( '<p>test</p>' ) );
             $this->assertSame( '<p>test</p>', $result,
                 __LINE__ . ':' . $method );
+
+            // Test valid container but missing closing tag within
+            $result = trim( $this->tidy->$method( '<p>test<span></p>' ) );
+            $this->assertSame( '<p>test</p>', $result,
+                __LINE__ . ':' . $method );
         }
     }
 }

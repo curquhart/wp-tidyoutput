@@ -561,9 +561,14 @@ class TidyOutput {
         $output = new \DOMDocument();
         $output->encoding = 'UTF-8';
 
+        $has_xpath = class_exists( '\\DOMXpath' );
+
         $failed = false;
         foreach ( $dom->childNodes as $child ) {
-            if ( isset( $child->childNodes )
+            // If we don't have XPath, do the best we can to remove empty nodes.
+            // I decided to not make this recursive for performance reasons and
+            // since empty tags aren't actually invalid.
+            if ( ! $has_xpath && isset( $child->childNodes )
                     && ( $child->childNodes->length === 0
                     && $child->attributes->length === 0 ) ) {
                 // Skip empty nodes
@@ -579,6 +584,16 @@ class TidyOutput {
         }
 
         if ( ! $failed ) {
+
+            // Use DOMXpath to remove empty nodes if possible
+            if ( $has_xpath ) {
+                $xpath = new \DOMXPath( $output );
+
+                foreach ( $xpath->query( '//*[not(node() or @*)]' ) as $node ) {
+                    $node->parentNode->removeChild( $node );
+                }
+            }
+
             return $output->saveHTML();
         }
 
