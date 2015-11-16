@@ -1,5 +1,7 @@
 <?php
 
+namespace TidyOutput;
+
 // Make sure WP_USE_THEMES is defined, to ensure this isn't being called
 // directly
 
