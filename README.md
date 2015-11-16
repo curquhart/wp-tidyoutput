@@ -1,7 +1,7 @@
 # Tidy Output WordPress Plugin
 
 ### Status
-[![Build Status](https://travis-ci.org/chelseau/wp-tidyoutput.png)](https://travis-ci.org/chelseau/wp-tidyoutput.png)
+[![Build Status](https://travis-ci.org/chelseau/wp-tidyoutput.png)](https://travis-ci.org/chelseau/wp-tidyoutput)
 
 ### About
 This is a plugin designed to cleanup bad HTML as well as (if enabled) format
