@@ -38,7 +38,6 @@ class TemplateTest extends \WP_UnitTestCase {
 
         // Set options
         $this->tidy = TidyOutput::get_instance();
-        $this->tidy->set_option( TidyOutput::TIDY_METHOD, 'tidy' );
         $this->tidy->set_option( TidyOutput::FULL_PAGE, true );
         $this->tidy->set_option( TidyOutput::CLEANUP, true );
         $this->tidy->set_option( TidyOutput::FORMAT, false );
@@ -59,6 +58,22 @@ class TemplateTest extends \WP_UnitTestCase {
         // Capture output
         ob_start();
 
+        $this->tidy->set_option( TidyOutput::TIDY_METHOD, 'tidy' );
+        require $filename;
+
+        // Retrieve output
+        $output = ob_get_clean();
+
+        $this->assertRegexp( '/' . preg_quote('<p>test</p>', '/') . '/',
+            $output );
+
+        $this->assertRegexp( '/' . preg_quote('<!doctype html>', '/') . '/i',
+            $output );
+
+        // Capture output
+        ob_start();
+
+        $this->tidy->set_option( TidyOutput::TIDY_METHOD, 'domdocument' );
         require $filename;
 
         // Retrieve output
