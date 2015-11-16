@@ -50,7 +50,7 @@ class TemplateTest extends \WP_UnitTestCase {
             __DIR__ . '/dummy_template.php' );
 
         // Set some terrible html
-        DummyOutput::set_output( "<html><body><p>test<span></p></body>" );
+        DummyOutput::set_output( "<!doctype html><html><body><p>test<span></p></body>" );
 
         // Say we're using themes so the template is actually rendered
         define( 'WP_USE_THEMES', true );

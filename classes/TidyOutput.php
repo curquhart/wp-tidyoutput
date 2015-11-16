@@ -553,7 +553,12 @@ class TidyOutput {
         $input->loadHTML( $content );
 
         if ( $full_html ) {
-            $dom = &$input;
+            $dom = $input->getElementsByTagName( 'html' );
+            if ($dom->length == 0) {
+                $dom = &$input;
+            } else {
+                $dom = $dom[0];
+            }
         } else {
             $dom = $input->getElementById( $uid );
         }
@@ -563,8 +568,31 @@ class TidyOutput {
 
         $has_xpath = class_exists( '\\DOMXpath' );
 
+        if ( $full_html && ( $dom_doctype = $input->doctype ) != '' ) {
+            $doctype = '<!DOCTYPE ' . $dom_doctype->name;
+
+            if ( trim( $dom_doctype->publicId ) != ''
+                    && trim( $dom_doctype->systemId ) != '' ) {
+
+                $doctype .= ' PUBLIC'
+                    . ' "' . htmlentities( trim( $dom_doctype->publicId ) ) . '"'
+                    . ' "' . htmlentities( trim( $dom_doctype->systemId ) ) . '"';
+            }
+
+            $doctype .= '>' . PHP_EOL;
+        } else if ( $full_html ) {
+            $doctype = '<!DOCTYPE html>' . PHP_EOL;
+        } else {
+            $doctype = '';
+        }
+
         $failed = false;
         foreach ( $dom->childNodes as $child ) {
+            if ( is_a( $child, '\\DOMDocumentType' ) ) {
+                // Skip doctype node
+                continue;
+            }
+
             // If we don't have XPath, do the best we can to remove empty nodes.
             // I decided to not make this recursive for performance reasons and
             // since empty tags aren't actually invalid.
@@ -594,7 +622,7 @@ class TidyOutput {
                 }
             }
 
-            return $output->saveHTML();
+            return $doctype . $output->saveHTML();
         }
 
         return $content;
