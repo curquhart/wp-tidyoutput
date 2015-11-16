@@ -692,15 +692,6 @@ class TidyOutput {
     }
 
     /**
-     * Returns the last set template file
-     *
-     * @return string
-     */
-    public function get_template() {
-        return $this->template_filename;
-    }
-
-    /**
      * Returns the template filename we were passed via the template_include
      * filter
      *

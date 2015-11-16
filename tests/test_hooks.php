@@ -41,6 +41,6 @@ class HookTest extends \WP_UnitTestCase {
             $filename );
 
         $this->assertSame( __FILE__,
-            TidyOutput::get_instance()->get_template() );
+            TidyOutput::get_instance()->get_template_filename() );
     }
 }
