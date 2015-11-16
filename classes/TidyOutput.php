@@ -671,6 +671,8 @@ class TidyOutput {
      *
      * This is for use with dynamic JS that is only dynamic so far that it uses
      * settings from this class.
+     *
+     * Note that this is safe to use without being attached to WordPress.
      */
     public function send_javascript_headers() {
         // Calculate time in the future
