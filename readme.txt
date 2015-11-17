@@ -36,9 +36,9 @@ Note that the default options are probably sufficient (just cleanup bad post con
 
 == Changelog ==
 
-= 1.0 =
-* First release
-
 = 1.0.1 =
 * Fixed uninstall
 * Updates screenshot
+
+= 1.0 =
+* First release
