@@ -591,9 +591,9 @@ class TidyOutput {
                     . ' "' . htmlentities( trim( $dom_doctype->systemId ) ) . '"';
             }
 
-            $doctype .= '>' . PHP_EOL;
+            $doctype .= '>';
         } else if ( $full_html ) {
-            $doctype = '<!DOCTYPE html>' . PHP_EOL;
+            $doctype = '<!DOCTYPE html>';
         } else {
             $doctype = '';
         }
