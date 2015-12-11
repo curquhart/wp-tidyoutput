@@ -170,7 +170,9 @@ class TidyOutput {
     }
 
     /**
-     * Returns a refernece to the handler identified by $key
+     * Returns a reference to the handler identified by $key
+     *
+     * @param string $key
      *
      * @return mixed
      */
