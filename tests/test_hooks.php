@@ -15,7 +15,7 @@ class HookTest extends \WP_UnitTestCase {
         $this->tidy->set_option( TidyOutput::FULL_PAGE, false );
         $this->tidy->set_option( TidyOutput::CLEANUP, true );
         $this->tidy->set_option( TidyOutput::FORMAT, true );
-        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT, 0 );
+        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT_CONTENT, 0 );
     }
 
     public function test_content_filter() {

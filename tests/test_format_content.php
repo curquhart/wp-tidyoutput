@@ -22,11 +22,11 @@ class FormatContentTest extends \WP_UnitTestCase {
     public function test_format_content() {
         // DOMDocument is not supported for formatting
         $raw = "<div><p>123</p></div>";
-        $result = $this->tidy->clean_content_domdocument( $raw );
+        $result = $this->tidy->clean_domdocument( $raw );
         $this->assertSame( $raw, $result );
 
         // Tidy sure is though!
-        $result = $this->tidy->clean_content_tidy( $raw );
+        $result = $this->tidy->clean_tidy( $raw );
         $result = str_replace( "\r", '', $result );
         $this->assertSame( "<div>\n    <p>123</p>\n</div>", $result );
     }

@@ -19,7 +19,8 @@ class ValidationTest extends \WP_UnitTestCase {
         $this->tidy->set_option( TidyOutput::FULL_PAGE, true );
         $this->tidy->set_option( TidyOutput::CLEANUP, true );
         $this->tidy->set_option( TidyOutput::FORMAT, true );
-        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT, 5 );
+        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT_CONTENT, 5 );
+        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT_COMMENT, 3 );
 
         $this->assertSame( 'tidy', $this->tidy->get_option(
             TidyOutput::TIDY_METHOD ) );
@@ -30,12 +31,15 @@ class ValidationTest extends \WP_UnitTestCase {
         $this->assertSame( true, $this->tidy->get_option(
             TidyOutput::FORMAT ) );
         $this->assertSame( 5, $this->tidy->get_option(
-            TidyOutput::EXTRANEOUS_INDENT ) );
+            TidyOutput::EXTRANEOUS_INDENT_CONTENT ) );
+        $this->assertSame( 3, $this->tidy->get_option(
+            TidyOutput::EXTRANEOUS_INDENT_COMMENT ) );
 
         // Now lets change to disabled and re-compare. This should disable
         // cleanup, format, and full page as well as they are unsupported.
         $this->tidy->set_option( TidyOutput::TIDY_METHOD, 'disable' );
-        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT, 1 );
+        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT_CONTENT, 1 );
+        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT_COMMENT, 2 );
 
         $this->assertSame( 'disable', $this->tidy->get_option(
             TidyOutput::TIDY_METHOD ) );
@@ -46,7 +50,9 @@ class ValidationTest extends \WP_UnitTestCase {
         $this->assertSame( false, $this->tidy->get_option(
             TidyOutput::FORMAT ) );
         $this->assertSame( 1, $this->tidy->get_option(
-            TidyOutput::EXTRANEOUS_INDENT ) );
+            TidyOutput::EXTRANEOUS_INDENT_CONTENT ) );
+        $this->assertSame( 2, $this->tidy->get_option(
+            TidyOutput::EXTRANEOUS_INDENT_COMMENT ) );
     }
 
     public function test_enable_unsupported_feature() {
@@ -115,11 +121,18 @@ class ValidationTest extends \WP_UnitTestCase {
             TidyOutput::FULL_PAGE ) );
 
         $default = $this->tidy->get_default_option(
-            TidyOutput::EXTRANEOUS_INDENT );
-        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT,
+            TidyOutput::EXTRANEOUS_INDENT_CONTENT );
+        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT_CONTENT,
             TidyOutput::MAX_EXTRANEOUS_INDENT + 1 );
         $this->assertSame( $default, $this->tidy->get_option(
-            TidyOutput::EXTRANEOUS_INDENT ) );
+            TidyOutput::EXTRANEOUS_INDENT_CONTENT ) );
+
+        $default = $this->tidy->get_default_option(
+            TidyOutput::EXTRANEOUS_INDENT_COMMENT );
+        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT_COMMENT,
+            TidyOutput::MAX_EXTRANEOUS_INDENT + 1 );
+        $this->assertSame( $default, $this->tidy->get_option(
+            TidyOutput::EXTRANEOUS_INDENT_COMMENT ) );
 
         $this->assertSame( null, $this->tidy->get_option( 'invalid' ) );
     }

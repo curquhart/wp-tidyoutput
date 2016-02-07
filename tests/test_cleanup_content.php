@@ -22,7 +22,7 @@ class CleanContentTest extends \WP_UnitTestCase {
     public function test_cleanup_content() {
         foreach ( array( 'tidy', 'domdocument' ) as $method ) {
 
-            $method = 'clean_content_' . $method;
+            $method = 'clean_' . $method;
 
             // Test extra closing tag
             $result = trim( $this->tidy->$method( "<p>test</p></p>" ) );

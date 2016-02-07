@@ -41,7 +41,7 @@ class TemplateTest extends \WP_UnitTestCase {
         $this->tidy->set_option( TidyOutput::FULL_PAGE, true );
         $this->tidy->set_option( TidyOutput::CLEANUP, true );
         $this->tidy->set_option( TidyOutput::FORMAT, false );
-        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT, 0 );
+        $this->tidy->set_option( TidyOutput::EXTRANEOUS_INDENT_CONTENT, 0 );
     }
 
     public function test_template() {
