@@ -420,7 +420,7 @@ class TidyOutput {
      */
     public function set_option( $key, $value ) {
         if ( ! $this->is_legacy_option( $key ) &&
-                ! isset ( $this->options[ $key ] ) ) {
+                ! isset ( $this->defaults[ $key ] ) ) {
             return false;
         }
 
