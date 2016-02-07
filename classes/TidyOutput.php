@@ -182,14 +182,14 @@ class TidyOutput {
         // Terminator
         $classes[] = null;
 
-        foreach ($classes as $class) {
+        foreach ( $classes as $class ) {
             if ( class_exists( $class ) ) {
                 $this->handlers[ $key ] = $class;
                 break;
             }
         }
 
-        if ($class === null) {
+        if ( $class === null ) {
             return false;
         }
 
@@ -557,7 +557,7 @@ class TidyOutput {
      *
      * @return string
      */
-    public function clean_tidy($content, $full_html = false ) {
+    public function clean_tidy( $content, $full_html = false ) {
         $tidy = new \tidy();
 
         $config = array(
@@ -615,7 +615,7 @@ class TidyOutput {
      *
      * @return string
      */
-    public function clean_domdocument($content, $full_html = false ) {
+    public function clean_domdocument( $content, $full_html = false ) {
         if ( ! $this->get_option( static::CLEANUP ) ) {
             // DOMDocument only supports cleanup. If that isn't enabled, abort.
             return $content;
@@ -724,7 +724,7 @@ class TidyOutput {
      *
      * @return string
      */
-    public function indent($content, $indents ) {
+    public function indent( $content, $indents ) {
         $length = strlen( $content );
         $indented = '';
         $indent = str_repeat( ' ', $indents * 4 );
@@ -764,11 +764,11 @@ class TidyOutput {
      *
      * @return string
      */
-    public function clean($content, $full_html = false, $type ) {
+    public function clean( $content, $full_html = false, $type ) {
         // Get the tidy method
         $full_page = $this->get_option( static::FULL_PAGE );
 
-        switch ($type) {
+        switch ( $type ) {
             case static::TYPE_CONTENT:
                 $indents = $this->get_option( static::EXTRANEOUS_INDENT_CONTENT );
                 break;
