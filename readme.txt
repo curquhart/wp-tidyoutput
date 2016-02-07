@@ -36,6 +36,9 @@ Note that the default options are probably sufficient (just cleanup bad post con
 
 == Changelog ==
 
+= 1.0.2 =
+* Clean comment HTML in addition to post content
+
 = 1.0.1 =
 * Fixed uninstall
 * Updates screenshot

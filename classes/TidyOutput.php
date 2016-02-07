@@ -276,6 +276,7 @@ class TidyOutput {
     public function init() {
         add_filter( 'template_include', array( &$this, 'swap_template' ), 99 );
         add_filter( 'the_content', array( &$this, 'clean_content' ), 20 );
+        add_filter( 'pre_comment_content', array( &$this, 'clean_content' ), 20 );
     }
 
     /**

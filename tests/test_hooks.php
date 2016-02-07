@@ -33,6 +33,21 @@ class HookTest extends \WP_UnitTestCase {
         $this->assertSame( '<p><span>test</span><span></span></p>', $content );
     }
 
+    public function test_comment_filter() {
+        $content = trim(
+            apply_filters( 'pre_comment_content',
+                '<a>test</a><a>' ) );
+        $this->assertSame( '<a>test</a>', $content );
+
+        // pre_comment_content filter is redundant if we're processing the full
+        // page. Set that option and try it out.
+        $this->tidy->set_option( TidyOutput::FULL_PAGE, true );
+        $content = trim(
+            apply_filters( 'pre_comment_content',
+                '<a>test</a><a>' ) );
+        $this->assertSame( '<a>test</a><a>', $content );
+    }
+
     public function test_page_filter() {
         $this->tidy->set_option( TidyOutput::FULL_PAGE, true );
         $filename = apply_filters( 'template_include', __FILE__ );
