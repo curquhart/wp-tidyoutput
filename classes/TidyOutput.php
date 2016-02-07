@@ -275,8 +275,8 @@ class TidyOutput {
      */
     public function init() {
         add_filter( 'template_include', array( &$this, 'swap_template' ), 99 );
-        add_filter( 'the_content', array( &$this, 'clean_content' ), 20 );
-        add_filter( 'pre_comment_content', array( &$this, 'clean_content' ), 20 );
+        add_filter( 'the_content', array( &$this, 'clean'), 20 );
+        add_filter( 'pre_comment_content', array( &$this, 'clean'), 20 );
     }
 
     /**
@@ -489,7 +489,7 @@ class TidyOutput {
      *
      * @return string
      */
-    public function clean_content_tidy( $content, $full_html = false ) {
+    public function clean_tidy($content, $full_html = false ) {
         $tidy = new \tidy();
 
         $config = array(
@@ -547,7 +547,7 @@ class TidyOutput {
      *
      * @return string
      */
-    public function clean_content_domdocument( $content, $full_html = false ) {
+    public function clean_domdocument($content, $full_html = false ) {
         if ( ! $this->get_option( static::CLEANUP ) ) {
             // DOMDocument only supports cleanup. If that isn't enabled, abort.
             return $content;
@@ -655,9 +655,9 @@ class TidyOutput {
      *
      * @return string
      */
-    public function indent_content( $content ) {
+    public function indent($content ) {
         $length = strlen( $content );
-        $indented_content = '';
+        $indented = '';
         $indent = str_repeat( ' ',
             $this->options[ static::EXTRANEOUS_INDENT ] * 4 );
         $lf = array( "\r", "\n" );
@@ -668,7 +668,7 @@ class TidyOutput {
 
             // Scan for newlines
             for ( ; $i < $length && in_array( $content[ $i ], $lf ); $i ++ ) {
-                $indented_content .= $content[ $i ];
+                $indented .= $content[ $i ];
                 $newlines = true;
             }
 
@@ -676,14 +676,14 @@ class TidyOutput {
                 if ( $newlines ) {
                     // Only add indent if there were actually newlines found,
                     // or this is the first character.
-                    $indented_content .= $indent;
+                    $indented .= $indent;
                 }
-                $indented_content .= $content[ $i ];
+                $indented .= $content[ $i ];
             }
         }
 
         // Return result
-        return $indented_content;
+        return $indented;
     }
 
     /**
@@ -694,7 +694,7 @@ class TidyOutput {
      *
      * @return string
      */
-    public function clean_content( $content, $full_html = false ) {
+    public function clean($content, $full_html = false ) {
         // Get the tidy method
         $full_page = $this->get_option( static::FULL_PAGE );
 
@@ -705,7 +705,7 @@ class TidyOutput {
             return $content;
         }
 
-        $method = 'clean_content_' . $this->get_option( static::TIDY_METHOD );
+        $method = 'clean_' . $this->get_option( static::TIDY_METHOD );
 
         if ( method_exists( $this, $method ) && $this->supports_any_action() ) {
             $content = $this->$method( $content, $full_html );
@@ -714,7 +714,7 @@ class TidyOutput {
         if ( ! $full_html && ( ! $this->get_option( static::FORMAT )
                 || ! $this->capturing )
                 && $this->options[ static::EXTRANEOUS_INDENT ] > 0 ) {
-            $content = $this->indent_content( $content );
+            $content = $this->indent( $content );
         }
 
         // Return result
@@ -782,7 +782,7 @@ class TidyOutput {
             $this->capturing = false;
 
             // Output result
-            echo $this->clean_content( $buffer, true );
+            echo $this->clean( $buffer, true );
         }
     }
 
