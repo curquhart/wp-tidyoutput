@@ -30,9 +30,20 @@ class TidyOutput {
     const FORMAT = 'format';
 
     /**
-     * Config key for extra indent levels
+     * Config key for extra indent levels. This is the legacy version (was a
+     * single setting for content)
      */
-    const EXTRANEOUS_INDENT = 'indent';
+    const EXTRANEOUS_INDENT_LEGACY = 'indent';
+
+    /**
+     * Config key for setting extra indent levels (post content)
+     */
+    const EXTRANEOUS_INDENT_CONTENT = 'indent_content';
+
+    /**
+     * Config key for setting extra indent levels (post comments)
+     */
+    const EXTRANEOUS_INDENT_COMMENT = 'indent_comment';
 
     /**
      * The path to our views. This is relative to our plugin root.
@@ -54,6 +65,21 @@ class TidyOutput {
      * Number of minutes to tell the browser to cache JavaScript for
      */
     const JAVASCRIPT_EXPIRES_MINUTES = 60;
+
+    /**
+     * Constant indicating content data type
+     */
+    const TYPE_CONTENT = 0;
+
+    /**
+     * Constant indicating comment data type
+     */
+    const TYPE_COMMENT = 1;
+
+    /**
+     * Constant indicating a full page
+     */
+    const TYPE_FULL_PAGE = 2;
 
     /**
      * @var TidyOutput|null The current instance object
@@ -102,7 +128,8 @@ class TidyOutput {
             static::FULL_PAGE => false,
             static::CLEANUP => true,
             static::FORMAT => false,
-            static::EXTRANEOUS_INDENT => 0
+            static::EXTRANEOUS_INDENT_COMMENT => 0,
+            static::EXTRANEOUS_INDENT_CONTENT => 0,
         );
 
         // Default header handler
@@ -250,9 +277,12 @@ class TidyOutput {
         add_settings_field( static::NAME . '_' . static::FORMAT,
             __( 'Format messy HTML', 'tidyoutput' ),
             array( &$this, 'field_format' ), static::NAME, 'tidyoutput' );
-        add_settings_field( static::NAME . '_' . static::EXTRANEOUS_INDENT,
+        add_settings_field( static::NAME . '_' . static::EXTRANEOUS_INDENT_CONTENT,
             __( 'Extra content indentation', 'tidyoutput' ),
-            array( &$this, 'field_indent' ), static::NAME, 'tidyoutput' );
+            array( &$this, 'field_indent_content' ), static::NAME, 'tidyoutput' );
+        add_settings_field( static::NAME . '_' . static::EXTRANEOUS_INDENT_COMMENT,
+            __( 'Extra comment indentation', 'tidyoutput' ),
+            array( &$this, 'field_indent_comment' ), static::NAME, 'tidyoutput' );
 
         // Scripts
         add_action( 'admin_enqueue_scripts',
@@ -275,8 +305,8 @@ class TidyOutput {
      */
     public function init() {
         add_filter( 'template_include', array( &$this, 'swap_template' ), 99 );
-        add_filter( 'the_content', array( &$this, 'clean'), 20 );
-        add_filter( 'pre_comment_content', array( &$this, 'clean'), 20 );
+        add_filter( 'the_content', array( &$this, 'clean_content' ), 20 );
+        add_filter( 'pre_comment_content', array( &$this, 'clean_comment' ), 20 );
     }
 
     /**
@@ -298,6 +328,11 @@ class TidyOutput {
     public function clean_options( $input ) {
         // Start out with the defaults and overwrite the rest
         $cleaned = $this->defaults;
+
+        if ( isset( $input[ static::EXTRANEOUS_INDENT_LEGACY ] ) ) {
+            // Legacy replaces CONTENT
+            $input [ static::EXTRANEOUS_INDENT_CONTENT ] = $input[ static::EXTRANEOUS_INDENT_LEGACY ];
+        }
 
         // Set defaults for any missing options
         foreach ( array_keys( $this->defaults ) as $key ) {
@@ -326,7 +361,8 @@ class TidyOutput {
                     $clean = filter_var( $input[ $key ],
                         FILTER_VALIDATE_BOOLEAN );
                     break;
-                case static::EXTRANEOUS_INDENT:
+                case static::EXTRANEOUS_INDENT_COMMENT:
+                case static::EXTRANEOUS_INDENT_CONTENT:
                     $clean = filter_var( $input[ $key ], FILTER_VALIDATE_INT );
                     if ( $clean < 0
                             || $clean > static::MAX_EXTRANEOUS_INDENT ) {
@@ -455,14 +491,29 @@ class TidyOutput {
     }
 
     /**
-     * Renders the Extraneous Indent field
+     * Renders the Extraneous Indent field (post content)
      */
-    public function field_indent() {
+    public function field_indent_content() {
         $options = $this->options;
-        $field = static::EXTRANEOUS_INDENT;
+        $field = static::EXTRANEOUS_INDENT_CONTENT;
         $range = range( 0, static::MAX_EXTRANEOUS_INDENT );
         $description = __( 'If not formatting the entire page, it can make the'
             . ' code cleaner by adding some extra indentation to post content.'
+            . ' Select the level of indentation to add (1 level equals 4'
+            . ' spaces) or 0 to disable this feature.', 'tidyoutput' );
+
+        require dirname( __DIR__ ) . static::PATH_VIEWS . 'fields/range.php';
+    }
+
+    /**
+     * Renders the Extraneous Indent field (post comments)
+     */
+    public function field_indent_comment() {
+        $options = $this->options;
+        $field = static::EXTRANEOUS_INDENT_COMMENT;
+        $range = range( 0, static::MAX_EXTRANEOUS_INDENT );
+        $description = __( 'If not formatting the entire page, it can make the'
+            . ' code cleaner by adding some extra indentation to post comments.'
             . ' Select the level of indentation to add (1 level equals 4'
             . ' spaces) or 0 to disable this feature.', 'tidyoutput' );
 
@@ -652,14 +703,14 @@ class TidyOutput {
      * so the point is moot if that is enabled.
      *
      * @param string $content
+     * @param int $indents
      *
      * @return string
      */
-    public function indent($content ) {
+    public function indent($content, $indents ) {
         $length = strlen( $content );
         $indented = '';
-        $indent = str_repeat( ' ',
-            $this->options[ static::EXTRANEOUS_INDENT ] * 4 );
+        $indent = str_repeat( ' ', $indents * 4 );
         $lf = array( "\r", "\n" );
 
         for ( $i = 0; $i < $length; $i ++ ) {
@@ -687,19 +738,34 @@ class TidyOutput {
     }
 
     /**
-     * Formats and cleans the content
+     * Formats and cleans html data
      *
      * @param string $content The content to clean
      * @param bool $full_html Indicates whether this is a full html page or not
+     * @param int $type The type of content we're cleaning (static::TYPE_CONTENT
+     * or static::TYPE_COMMENT)
      *
      * @return string
      */
-    public function clean($content, $full_html = false ) {
+    public function clean($content, $full_html = false, $type ) {
         // Get the tidy method
         $full_page = $this->get_option( static::FULL_PAGE );
 
-        if ( ! $full_html && $full_page
-                && ! $this->get_option( static::EXTRANEOUS_INDENT ) ) {
+        switch ($type) {
+            case static::TYPE_CONTENT:
+                $indents = $this->get_option( static::EXTRANEOUS_INDENT_CONTENT );
+                break;
+            case static::TYPE_COMMENT:
+                $indents = $this->get_option( static::EXTRANEOUS_INDENT_COMMENT );
+                break;
+            case static::TYPE_FULL_PAGE:
+                $indents = 0;
+                break;
+            default:
+                throw new \InvalidArgumentException('Invalid type specified!');
+        }
+
+        if ( ! $full_html && $full_page && ! $indents ) {
             // Don't apply this filter if extraneous indentation is disabled
             // and we're processing the full page
             return $content;
@@ -713,12 +779,36 @@ class TidyOutput {
 
         if ( ! $full_html && ( ! $this->get_option( static::FORMAT )
                 || ! $this->capturing )
-                && $this->options[ static::EXTRANEOUS_INDENT ] > 0 ) {
-            $content = $this->indent( $content );
+                && $indents > 0 ) {
+            $content = $this->indent( $content, $indents );
         }
 
         // Return result
         return $content;
+    }
+
+    /**
+     * Formats and cleans html content
+     *
+     * @param string $content The content to clean
+     * @param bool $full_html Indicates whether this is a full html page or not
+     *
+     * @return string
+     */
+    public function clean_content( $content, $full_html = false ) {
+        return $this->clean( $content, $full_html, static::TYPE_CONTENT );
+    }
+
+    /**
+     * Formats and cleans html comments
+     *
+     * @param string $comment The comment to clean
+     * @param bool $full_html Indicates whether this is a full html page or not
+     *
+     * @return string
+     */
+    public function clean_comment( $comment, $full_html = false ) {
+        return $this->clean( $comment, $full_html, static::TYPE_COMMENT );
     }
 
     /**
@@ -782,7 +872,7 @@ class TidyOutput {
             $this->capturing = false;
 
             // Output result
-            echo $this->clean( $buffer, true );
+            echo $this->clean( $buffer, static::TYPE_FULL_PAGE, true );
         }
     }
 
