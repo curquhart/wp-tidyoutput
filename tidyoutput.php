@@ -7,7 +7,7 @@ Description: A plugin designed to cleanup HTML output
 Author: Chelsea Urquhart
 Text Domain: tidyoutput
 Domain Path: /languages
-Version: 1.0.1
+Version: 1.0.2
 Author URI: http://www.chelseau.com
 */
 
