@@ -419,7 +419,8 @@ class TidyOutput {
      * @return bool
      */
     public function set_option( $key, $value ) {
-        if ( ! isset ( $this->options[ $key ] ) ) {
+        if ( ! $this->is_legacy_option( $key ) &&
+                ! isset ( $this->options[ $key ] ) ) {
             return false;
         }
 
@@ -430,6 +431,22 @@ class TidyOutput {
 
         // Save options
         return update_option( static::NAME, $this->options );
+    }
+
+    /**
+     * Returns true if this is a legacy option. Else false.
+     *
+     * @param string $key The options key we're looking at
+     *
+     * @return bool
+     */
+    public function is_legacy_option( $key ) {
+        switch ( $key ) {
+            case static::EXTRANEOUS_INDENT_LEGACY:
+                return true;
+        }
+
+        return false;
     }
 
     /**
